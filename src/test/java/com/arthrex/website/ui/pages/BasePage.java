@@ -45,6 +45,14 @@ public class BasePage {
         wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
+    public WebElement getWebElementOrNullBy(By by) {
+        try {
+            return this.driver.findElement(by);
+        } catch (NoSuchElementException ex) {
+            return null;
+        }
+    }
+
     public void click(WebElement element) {
         this.waitForElementToBeClickable(element);
         element.click();
@@ -56,7 +64,7 @@ public class BasePage {
         element.sendKeys(text);
     }
 
-    public String getText(WebElement element) {
+    public String getWebElementText(WebElement element) {
         return element.getText();
     }
 

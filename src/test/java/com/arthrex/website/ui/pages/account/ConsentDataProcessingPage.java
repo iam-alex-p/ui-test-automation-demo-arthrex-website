@@ -1,6 +1,7 @@
 package com.arthrex.website.ui.pages.account;
 
 import com.arthrex.website.ui.pages.BasePage;
+import com.arthrex.website.ui.pages.common.CookieDisclaimerPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -13,7 +14,8 @@ public class ConsentDataProcessingPage extends BasePage {
         super(driver);
     }
 
-    public void clickAcceptAndCreateAccount() {
+    public CookieDisclaimerPage clickAcceptAndCreateAccount() {
         this.click(this.btnAcceptAndCreateAccount);
+        return new CookieDisclaimerPage(this.driver);
     }
 }

@@ -124,7 +124,7 @@ Feature: Arthrex Website Account
       | 18235-2239 | true    |                                      | Valid US Zip Code               |
 
   @SmokeTest @WebsiteProfile @AccountInfoPassword
-  Scenario: Verify Arthrex Practice Zip Code Account Information
+  Scenario: Verify Arthrex Account Password Confirmation Logic
     When I select "Non-Operative Physician" Account Role
     And I click Next on Subscription Information Page
     Then Verify Password Confirmation Logic with the following Data

@@ -1,6 +1,8 @@
 package com.arthrex.website.ui.pages.account;
 
 import com.arthrex.website.ui.pages.BasePage;
+import com.arthrex.website.ui.pages.common.ToastMessagesPage;
+import com.arthrex.website.ui.tests.data.TestDataEntities;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 
@@ -132,5 +134,31 @@ public class AccountInfoPage extends BasePage {
     public void acceptTermsAndConditions() {
         if (!this.chckBoxAcceptTerms.isSelected())
             this.click(this.chckBoxAcceptTerms);
+    }
+
+    public AccountInfoPage fillAccountInfo(TestDataEntities.WebsiteUser websiteUser) throws InterruptedException {
+        this.enterTextFieldValue(websiteUser.getUsername(), AccountField.USERNAME);
+        this.enterTextFieldValue(websiteUser.getEmail(), AccountField.EMAIL);
+        this.enterTextFieldValue(websiteUser.getPassword(), AccountField.PASSWORD);
+        this.enterTextFieldValue(websiteUser.getPassword(), AccountField.PASSWORD_CONFIRM);
+        this.enterTextFieldValue(websiteUser.getFirstName(), AccountField.FIRST_NAME);
+        this.enterTextFieldValue(websiteUser.getLastName(), AccountField.LAST_NAME);
+
+        for (String designation : websiteUser.getArrDesignation())
+            this.selectUserDesignation(designation);
+
+        this.enterTextFieldValue(websiteUser.getPracticeName(), AccountField.PRACTICE_NAME);
+        this.enterTextFieldValue(websiteUser.getPracticeCountry(), AccountField.PRACTICE_COUNTRY);
+        this.enterTextFieldValue(websiteUser.getPracticeZip(), AccountField.PRACTICE_ZIP);
+        this.enterTextFieldValue(websiteUser.getPracticeSpecialty(), AccountField.PRACTICE_SPECIALTY);
+
+        return this;
+    }
+
+    public String getAlertSuccessText() {
+        ToastMessagesPage toastMessagesPage = new ToastMessagesPage(this.driver);
+        WebElement alertSuccess = toastMessagesPage.getAlertSuccess();
+
+        return alertSuccess != null ? this.getWebElementText(alertSuccess) : null;
     }
 }

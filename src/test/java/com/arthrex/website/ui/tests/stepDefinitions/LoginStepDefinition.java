@@ -4,6 +4,7 @@ import com.arthrex.website.ui.pages.account.*;
 import com.arthrex.website.ui.pages.common.MainPage;
 import com.arthrex.website.ui.tests.TestContext;
 import com.arthrex.website.ui.tests.data.TestDataEntities;
+import com.arthrex.website.ui.utilities.Consts;
 import com.github.javafaker.Faker;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.And;
@@ -22,6 +23,8 @@ public class LoginStepDefinition extends BaseTest {
 
     private MainPage mainPage;
     private UserProfilePage userProfilePage;
+    private AccountInfoPage accountInfoPage;
+
 
     @DataTableType(replaceWithEmptyString = "[blank]")
     public TestDataEntities.WebsiteUser UserEntityTransformer(Map<String, String> row) {
@@ -54,33 +57,23 @@ public class LoginStepDefinition extends BaseTest {
         RoleSelectionPage roleSelectionPage = new RoleSelectionPage(this.testContext.getDriver());
 
         SubscriptionInfoPage subscriptionInfoPage = roleSelectionPage.selectAccountRole(websiteUser.getUserRole());
-        AccountInfoPage accountInfoPage = subscriptionInfoPage.clickNext();
+        this.accountInfoPage = subscriptionInfoPage.clickNext();
 
-        accountInfoPage.enterTextFieldValue(websiteUser.getUsername(), AccountField.USERNAME);
-        accountInfoPage.enterTextFieldValue(websiteUser.getEmail(), AccountField.EMAIL);
-        accountInfoPage.enterTextFieldValue(websiteUser.getPassword(), AccountField.PASSWORD);
-        accountInfoPage.enterTextFieldValue(websiteUser.getPassword(), AccountField.PASSWORD_CONFIRM);
-        accountInfoPage.enterTextFieldValue(websiteUser.getFirstName(), AccountField.FIRST_NAME);
-        accountInfoPage.enterTextFieldValue(websiteUser.getLastName(), AccountField.LAST_NAME);
-
-        for (String designation : websiteUser.getArrDesignation())
-            accountInfoPage.selectUserDesignation(designation);
-
-        accountInfoPage.enterTextFieldValue(websiteUser.getPracticeName(), AccountField.PRACTICE_NAME);
-        accountInfoPage.enterTextFieldValue(websiteUser.getPracticeCountry(), AccountField.PRACTICE_COUNTRY);
-        accountInfoPage.enterTextFieldValue(websiteUser.getPracticeZip(), AccountField.PRACTICE_ZIP);
-        accountInfoPage.enterTextFieldValue(websiteUser.getPracticeSpecialty(), AccountField.PRACTICE_SPECIALTY);
-
-        accountInfoPage.acceptTermsAndConditions();
-        accountInfoPage.clickNext().clickAcceptAndCreateAccount();
+        this.accountInfoPage = this.accountInfoPage.fillAccountInfo(websiteUser);
+        this.accountInfoPage.acceptTermsAndConditions();
+        this.accountInfoPage.clickNext().clickAcceptAndCreateAccount().clickSaveSettings();
 
         this.mapUserAccounts.putIfAbsent(websiteUser.getUsername(), websiteUser);
-
-        accountInfoPage.waitForElementToAppear(By.xpath("//span[text()='Save Settings']"));
-        this.testContext.getDriver().findElement(By.xpath("//span[text()='Save Settings']")).click();
     }
 
-    @Then("User Profile Page should appear with correct Username")
+    @Then("Alert with success message should appear")
+    public void alert_with_success_message_appear() {
+        final String txtAlertSuccess = this.accountInfoPage.getAlertSuccessText();
+        Assert.assertNotNull(txtAlertSuccess, "Alert with success message did not appear!");
+        Assert.assertTrue(txtAlertSuccess.contains(Consts.TOAST_MESSAGE_ACCOUNT_CREATED_SUCCESSFULLY), String.format("Alert message has unexpected Text [%s]!", txtAlertSuccess));
+    }
+
+    @And("User Profile Page should appear with correct Username")
     public void user_profile_page_should_appear() {
         this.userProfilePage = new UserProfilePage(this.testContext.getDriver());
 
