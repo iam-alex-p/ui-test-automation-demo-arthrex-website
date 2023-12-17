@@ -14,6 +14,7 @@ public class BasePage {
     protected final WebDriver driver;
     private final WebDriverWait wait;
     private final Actions actions;
+    private final String WEB_ELEMENT_WITH_TEXT_XPATH = "//*[text()='%s']";
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
@@ -83,7 +84,16 @@ public class BasePage {
     }
 
     public Boolean isElementWithTextExists(String text) {
-        return this.driver.findElements(By.xpath(String.format("//*[text()='%s']", text))).size() > 0;
+        return this.driver.findElements(By.xpath(String.format(this.WEB_ELEMENT_WITH_TEXT_XPATH, text))).size() > 0;
+    }
+
+    public WebElement getElementWithTextOrNull(String text) {
+        try {
+            return this.driver.findElement(By.xpath(String.format(this.WEB_ELEMENT_WITH_TEXT_XPATH, text)));
+        } catch (NoSuchElementException ex) {
+            return null;
+        }
+
     }
 
     public String getAttributeValue(WebElement element, String attribute) {

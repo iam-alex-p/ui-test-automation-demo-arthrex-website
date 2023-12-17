@@ -8,7 +8,6 @@ import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
@@ -127,7 +126,9 @@ public class AccountStepDefinitions extends BaseTest {
 
     @Then("Error Message with text {string} should disappear")
     public void error_message_with_text_should_disappear(String errorText) {
-        this.accountInfoPage.waitForElementToDisappear(By.xpath(String.format("//*[text()='%s']", errorText)));
+        if (this.accountInfoPage.getElementWithTextOrNull(errorText) != null)
+            this.accountInfoPage.waitForElementToDisappear(this.accountInfoPage.getElementWithTextOrNull(errorText));
+
         Assert.assertFalse(this.accountInfoPage.isElementWithTextExists(errorText), String.format("Error with Text [%s] did not disappear!", errorText));
     }
 }

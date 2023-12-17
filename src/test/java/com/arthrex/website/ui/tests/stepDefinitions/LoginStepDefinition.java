@@ -10,9 +10,6 @@ import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 import java.util.HashMap;
@@ -99,12 +96,6 @@ public class LoginStepDefinition extends BaseTest {
 
     @Then("Profile button should appear")
     public void profile_buton_should_appear() {
-        WebElement btnProfile = null;
-
-        try {
-            btnProfile = this.testContext.getDriver().findElement(By.xpath("//button[@data-testid='navLoginButton']"));
-        } catch (NoSuchElementException ignored) {}
-
-        Assert.assertNotNull(btnProfile, "Profile Button did not appear!");
+        Assert.assertNotNull(this.mainPage.getHeaderMenuPage().getProfileButton(), "Profile Button did not appear!");
     }
 }
